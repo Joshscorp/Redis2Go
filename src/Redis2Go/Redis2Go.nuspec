@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Redis2Go</id>
+        <version>0.1.0.0</version>
+        <title>Redis2Go</title>
+        <authors>Josh Sim</authors>
+        <owners>Josh Sim</owners>
+        <licenseUrl>https://github.com/Joshscorp/Redis2Go/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/Joshscorp/Redis2Go</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Easily spin up Redis instances for integration tests</description>
+        <summary>.Net Redis Runner Utility mainly used for integration tests</summary>
+        <copyright>Copyright © Joshscorp 2015</copyright>
+      <dependencies>
+        <group targetFramework=".NETFramework4.5">
+          <dependency id="Redis-32" version="2.6.12.1" />
+        </group>
+      </dependencies>
+    </metadata>
+</package>
