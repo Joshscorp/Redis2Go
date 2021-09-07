@@ -1,4 +1,4 @@
-﻿using Redis2Go.Exceptions;
+using Redis2Go.Exceptions;
 using Redis2Go.Helpers;
 using System;
 
@@ -8,6 +8,7 @@ namespace Redis2Go
     {
         private const string BinariesSearchPattern = @"packages\Redis*\tools";
         private const string BinariesSearchPatternSolution = @"Redis*\tools";
+        public const string WindowsNugetCacheLocation = @"%USERPROFILE%\.nuget\packages";
 
         private readonly IRedisProcess _redisProcess;
         private readonly int _port;
@@ -63,8 +64,9 @@ namespace Redis2Go
             get
             {
                 // 1st: path when installed via nuget
-                // 2nd: path when started from solution
+                // 2st: path when installed via nuget using PackageReference
                 string binariesFolder = FolderSearch.CurrentExecutingDirectory().FindFolderUpwards(BinariesSearchPattern) ??
+                                        Environment.ExpandEnvironmentVariables(WindowsNugetCacheLocation).FindFolderUpwards(BinariesSearchPattern) ??
                                         FolderSearch.CurrentExecutingDirectory().FindFolderUpwards(BinariesSearchPatternSolution);
 
                 if (binariesFolder == null)
