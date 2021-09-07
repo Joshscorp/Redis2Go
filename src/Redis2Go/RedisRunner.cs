@@ -1,4 +1,4 @@
-using Redis2Go.Exceptions;
+﻿using Redis2Go.Exceptions;
 using Redis2Go.Helpers;
 using System;
 
@@ -6,9 +6,10 @@ namespace Redis2Go
 {
     public class RedisRunner : IDisposable
     {
-        private const string BinariesSearchPattern = @"packages\Redis*\tools";
         private const string BinariesSearchPatternSolution = @"Redis*\tools";
+        private static string BinariesSearchPattern = @"packages\Redis*\tools";
         public const string WindowsNugetCacheLocation = @"%USERPROFILE%\.nuget\packages";
+        private static string BinariesSearchDirectory;
 
         private readonly IRedisProcess _redisProcess;
         private readonly int _port;
@@ -17,13 +18,17 @@ namespace Redis2Go
         public int Port { get { return this._port; } }
         public bool Disposed { get; private set; }
 
-        public static RedisRunner Start()
+        public static RedisRunner Start(string binariesSearchDirectory = null, string binariesSearchPatternOverride = null)
         {
+            if (!string.IsNullOrWhiteSpace(binariesSearchPatternOverride)) BinariesSearchPattern = binariesSearchPatternOverride;
+            if (!string.IsNullOrWhiteSpace(binariesSearchDirectory)) BinariesSearchDirectory = binariesSearchDirectory;
             return new RedisRunner(PortPool.GetInstance, new RedisProcessStarter());
         }
 
-        public static RedisRunner StartForDebugging()
+        public static RedisRunner StartForDebugging(string binariesSearchDirectory = null, string binariesSearchPatternOverride = null)
         {
+            if (!string.IsNullOrWhiteSpace(binariesSearchPatternOverride)) BinariesSearchPattern = binariesSearchPatternOverride;
+            if (!string.IsNullOrWhiteSpace(binariesSearchDirectory)) BinariesSearchDirectory = binariesSearchDirectory;
             return new RedisRunner(new ProcessWatcher(), new PortWatcher(), new RedisProcessStarter());
         }
 
@@ -63,10 +68,13 @@ namespace Redis2Go
         {
             get
             {
-                // 1st: path when installed via nuget
+                // 1st: path when search overrides specified
                 // 2st: path when installed via nuget using PackageReference
-                string binariesFolder = FolderSearch.CurrentExecutingDirectory().FindFolderUpwards(BinariesSearchPattern) ??
+                // 3st: path when installed via nuget
+                // 4nd: path when started from solution
+                string binariesFolder = BinariesSearchDirectory?.FindFolderUpwards(BinariesSearchPattern) ??
                                         Environment.ExpandEnvironmentVariables(WindowsNugetCacheLocation).FindFolderUpwards(BinariesSearchPattern) ??
+                                        FolderSearch.CurrentExecutingDirectory().FindFolderUpwards(BinariesSearchPattern) ??
                                         FolderSearch.CurrentExecutingDirectory().FindFolderUpwards(BinariesSearchPatternSolution);
 
                 if (binariesFolder == null)
