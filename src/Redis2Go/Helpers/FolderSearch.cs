@@ -27,7 +27,16 @@ namespace Redis2Go.Helpers
                 {
                     return null;
                 }
-                currentPath = matchesDirectory.OrderBy(x => x).Last();
+
+                if (matchesDirectory.Length > 1)
+                {
+                    currentPath = matchesDirectory.FirstOrDefault(x => FindFolder(x, @"*\tools") != null) ??
+                                  matchesDirectory.OrderBy(x => x).Last();
+                }
+                else
+                {
+                    currentPath = matchesDirectory.First();
+                }
             }
 
             return currentPath;
