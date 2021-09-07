@@ -7,7 +7,7 @@ namespace Redis2Go
     public class RedisRunner : IDisposable
     {
         private const string BinariesSearchPatternSolution = @"Redis*\tools";
-        private static string BinariesSearchPattern = @"packages\Redis*\tools";
+        private static string BinariesSearchPattern = @"packages\Redis*\*\tools";
         public const string WindowsNugetCacheLocation = @"%USERPROFILE%\.nuget\packages";
         private static string BinariesSearchDirectory;
 
